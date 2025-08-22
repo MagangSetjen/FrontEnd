@@ -1,5 +1,6 @@
 package com.laila.terastv.ui.dashboard
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -10,7 +11,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.DateRange
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.GetApp
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -19,13 +19,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.laila.terastv.R
 import com.laila.terastv.ui.theme.TerasTVTheme
 import com.laila.terastv.ui.theme.getRobotoFontFamily
+import androidx.compose.material.icons.outlined.HelpOutline
 
 // Data class untuk tabel
 data class AppUsageData(
@@ -40,10 +40,16 @@ data class AppUsageData(
 )
 
 @Composable
-fun DashboardScreen(modifier: Modifier = Modifier) {
+fun DashboardScreen(
+    modifier: Modifier = Modifier,
+    onAboutClick: () -> Unit = {} // sambungkan ke halaman "About"
+) {
     // Dummy data untuk tabel
     val appUsageList = listOf(
-        AppUsageData(1, "012345", "10/08/2025", "📱", "Youtube", "https://youtu.be/...", "00.00.00", "00.00.00")
+        AppUsageData(
+            1, "012345", "10/08/2025", "📱",
+            "Youtube", "https://youtu.be/...", "00.00.00", "00.00.00"
+        )
     )
 
     Column(
@@ -65,7 +71,7 @@ fun DashboardScreen(modifier: Modifier = Modifier) {
                     .background(Color.White, RoundedCornerShape(6.dp))
             ) {
                 Icon(
-                    imageVector = Icons.Default.Close,
+                    imageVector = Icons.Filled.Close,
                     contentDescription = "Close",
                     tint = Color.Red,
                     modifier = Modifier.size(28.dp)
@@ -141,8 +147,6 @@ fun DashboardScreen(modifier: Modifier = Modifier) {
             }
         }
 
-
-
         // Log History, Filter dan PDF buttons
         Row(
             modifier = Modifier
@@ -163,14 +167,16 @@ fun DashboardScreen(modifier: Modifier = Modifier) {
                 // Filter Button
                 Button(
                     onClick = { /* Handle filter */ },
-                    modifier = Modifier.padding(end = 8.dp),
+                    modifier = Modifier
+                        .padding(end = 8.dp),
                     colors = ButtonDefaults.outlinedButtonColors(
                         containerColor = Color.White
                     ),
-                    shape = RoundedCornerShape(6.dp)
+                    shape = RoundedCornerShape(6.dp),
+                    border = BorderStroke(1.dp, Color.LightGray)
                 ) {
                     Icon(
-                        imageVector = Icons.Default.DateRange,
+                        imageVector = Icons.Filled.DateRange,
                         contentDescription = "Filter",
                         modifier = Modifier.size(16.dp),
                         tint = Color.Black
@@ -188,13 +194,16 @@ fun DashboardScreen(modifier: Modifier = Modifier) {
                 // PDF Button
                 Button(
                     onClick = { /* Handle PDF export */ },
+                    modifier = Modifier
+                        .padding(end = 8.dp),
                     colors = ButtonDefaults.outlinedButtonColors(
                         containerColor = Color.White
                     ),
-                    shape = RoundedCornerShape(6.dp)
+                    shape = RoundedCornerShape(6.dp),
+                    border = BorderStroke(1.dp, Color.LightGray)
                 ) {
                     Icon(
-                        imageVector = Icons.Default.GetApp,
+                        imageVector = Icons.Filled.GetApp,
                         contentDescription = "PDF",
                         modifier = Modifier.size(16.dp),
                         tint = Color.Black
@@ -211,9 +220,11 @@ fun DashboardScreen(modifier: Modifier = Modifier) {
             }
         }
 
-        // Table
+        // ===== Tabel =====
         Card(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f),
             colors = CardDefaults.cardColors(containerColor = Color.White),
             elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
             shape = RoundedCornerShape(8.dp)
@@ -281,8 +292,8 @@ fun DashboardScreen(modifier: Modifier = Modifier) {
                         }
                     }
 
-                    // Empty rows for visual completeness
-                    items(4) {
+                    // Empty rows 
+                    items(5) {
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -297,6 +308,38 @@ fun DashboardScreen(modifier: Modifier = Modifier) {
                         Divider(color = Color(0xFFE0E0E0), thickness = 1.dp)
                     }
                 }
+            }
+        }
+
+        // button "tentang aplikasi"
+        Spacer(modifier = Modifier.height(6.dp))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.End
+        ) {
+            Button(
+                onClick = onAboutClick,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.White,
+                    contentColor = Color.Gray
+                ),
+                shape = RoundedCornerShape(20.dp),
+                contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp),
+                modifier = Modifier.height(28.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Outlined.HelpOutline,
+                    contentDescription = "Tentang aplikasi",
+                    modifier = Modifier.size(16.dp),
+                    tint = Color.Gray
+                )
+                Spacer(modifier = Modifier.width(4.dp))
+                Text(
+                    text = "Tentang aplikasi",
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Medium,
+                    fontFamily = getRobotoFontFamily()
+                )
             }
         }
     }
@@ -335,6 +378,7 @@ fun RowScope.TableDataCell(text: String, weight: Float) {
     }
 }
 
+/* ================= Preview ================= */
 @Preview(showBackground = true, device = "id:tv_1080p")
 @Composable
 fun DashboardScreenPreview() {
